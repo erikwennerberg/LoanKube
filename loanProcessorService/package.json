@@ -1,0 +1,20 @@
+{
+  "name": "loanprocessorservice",
+  "version": "0.0.1",
+  "description": "Process orchestration for loan approval ",
+  "main": "src/server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node ./src/server.js"
+  },
+  "author": "ML",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.19.0",
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "dotenv": "^8.0.0",
+    "express": "^4.17.1",
+    "request": "^2.88.0"
+  }
+}
