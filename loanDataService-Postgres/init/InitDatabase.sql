@@ -1,12 +1,3 @@
-CREATE TABLE applcations
-(
-    application_id varchar(50) PRIMARY KEY,
-    loan_data VARCHAR (512) UNIQUE NOT NULL,
-    application_status varchar(10),
-    modified TIMESTAMP NULL
-);
-
-
 SELECT a.approved, r.rejected, t.total, (t.total-(a.approved+r.rejected)) as notprocessed
 FROM (SELECT count(*) as approved
     FROM applications
@@ -17,4 +8,4 @@ FROM (SELECT count(*) as approved
     (SELECT count(*) as total
     FROM applications) as t
 
-CREATE TABLE applcations (application_id varchar(50) PRIMARY KEY, loan_data VARCHAR (512) UNIQUE NOT NULL, application_status varchar(10), modified TIMESTAMP NULL);
+CREATE TABLE applications (application_id varchar(50) PRIMARY KEY, loan_data VARCHAR (512) UNIQUE NOT NULL, application_status varchar(10), modified TIMESTAMP NULL);
