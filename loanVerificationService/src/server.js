@@ -15,7 +15,7 @@ app.use(cors());
 app.use(require("./routes"));
 
 //start the server listening on a port
-const port = process.env.LOANVERIFICATION_SERVICE_PORT || 80;
+const port = process.env.LOANVERIFICATION_SERVICE_PORT || 8000;
 app.listen(port, () => {
     console.log(`LoanVerificationService is listening on port ${port}`);
 });
