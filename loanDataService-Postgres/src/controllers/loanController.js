@@ -71,8 +71,10 @@ saveLoanApplication = async (req, resp) => {
             else
                 success = false;
         }
-        const res1 = await pool.query(`update applications set loan_data='${JSON.stringify(loan)}', application_status=${success} where application_id='${loan.loanId}'`);
-
+        const sqlu = `update applications set loan_data='${JSON.stringify(loan)}', application_status=${success} where application_id='${loan.loanId}'`
+        console.log(sqlu)
+        const res1 = await pool.query(sqlu);
+        
         console.log(res1.rowCount);
         if (res1 == null || res1.rowCount == 0) {
             const sql = `insert into applications (application_id, loan_data) values ('${loan.loanId}','${JSON.stringify(loan)}')`;

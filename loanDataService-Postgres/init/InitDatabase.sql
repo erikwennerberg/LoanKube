@@ -1,10 +1,10 @@
 SELECT a.approved, r.rejected, t.total, (t.total-(a.approved+r.rejected)) as notprocessed
 FROM (SELECT count(*) as approved
     FROM applications
-    where application_status=true) as a,
+    where application_status = 'true') as a,
     (SELECT count(*) as rejected
     FROM applications
-    where application_status=false) as r,
+    where application_status = 'false') as r,
     (SELECT count(*) as total
     FROM applications) as t
 
