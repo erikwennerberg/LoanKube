@@ -52,7 +52,7 @@ verifyLoanApplication = async (req, resp) => {
 
 
         //fake time delay to allow real world differences
-        await sleep(random.weightedRandom(2000, 2));
+        //await sleep(random.weightedRandom(2000, 2));
 
         //send just validation result
         resp.status(200).send(JSON.stringify(validation));
