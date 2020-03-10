@@ -55,7 +55,7 @@ verifyLoanApplication = async (req, resp) => {
         //await sleep(random.weightedRandom(2000, 2));
         var val = 0;
         for (let i = 0; i < 10000; i++) 
-            for (let x = 0; x < 8000; x++) 
+            for (let x = 0; x < 10000; x++) 
                 val = i-x
         console.log(val)
 
