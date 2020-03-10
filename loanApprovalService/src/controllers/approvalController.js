@@ -32,8 +32,8 @@ approveLoanApplication = async (req, resp) => {
         //fake time delay to allow real world differences
         //await sleep(random.weightedRandom(2000, 2));
         var val = 0;
-        for (let i = 0; i < 4000; i++) 
-            for (let x = 0; x < 4000; x++) 
+        for (let i = 0; i < 8000; i++) 
+            for (let x = 0; x < 8000; x++) 
                 val = i-x
         console.log(val)
 
