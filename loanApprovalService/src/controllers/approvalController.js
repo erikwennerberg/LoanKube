@@ -59,7 +59,7 @@ approveLoan = (loan) => {
 
     //amount factor
     if (Number(loan.loanAmount) > 5000000)
-        chance = 10;
+        chance = 15;
     else if (Number(loan.loanAmount) > 1000000)
         chance = 35;
     else if (Number(loan.loanAmount) > 500000)
