@@ -15,7 +15,7 @@ app.use(cors());
 app.use(require("./routes"));
 
 //start the server listening on a port
-const port = process.env.LOANDATA_SERVICE_PORT || 8000;
+const port = process.env.LOANDATA_SERVICE_PORT || 3000;
 app.listen(port, () => {
     console.log(`LoanDataService for Postgres is listening on port ${port}`);
 });
