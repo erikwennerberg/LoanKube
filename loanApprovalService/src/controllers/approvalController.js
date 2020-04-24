@@ -23,7 +23,7 @@ approveLoanApplication = async (req, resp) => {
         if (loan.applicationResult == null)
             loan.applicationResult = {};
         loan.applicationResult.approvalProcess = approval;
-
+       
         //save updated loan application into data store
         let response2 = await axios.post(`http://${process.env.LOANDATA_SERVICE_HOST}:${process.env.LOANDATA_SERVICE_PORT}`, JSON.stringify(loan), { headers: { "Content-Type": "application/json" } });
         if (response2.status !== 200)

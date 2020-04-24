@@ -71,13 +71,13 @@ saveLoanApplication = async (req, resp) => {
             else
                 success = false;
         }
-        const sqlu = `update applications set loan_data='${JSON.stringify(loan)}', application_status=${success} where application_id='${loan.loanId}'`
+        const sqlu = `update applications set loan_data='${JSON.stringify(loan)}', application_status=${success}, modified=now() where application_id='${loan.loanId}'`
         console.log(sqlu)
         const res1 = await pool.query(sqlu);
         
         console.log(res1.rowCount);
         if (res1 == null || res1.rowCount == 0) {
-            const sql = `insert into applications (application_id, loan_data) values ('${loan.loanId}','${JSON.stringify(loan)}')`;
+            const sql = `insert into applications (application_id, loan_data, modified) values ('${loan.loanId}','${JSON.stringify(loan)}',now())`;
             console.log(sql);
             const res2 = await pool.query(sql);
         }
@@ -92,7 +92,7 @@ saveLoanApplication = async (req, resp) => {
 };
 getLoanMetrics = async (req, resp) => {
     try {
-        console.log(`request for loan metrics`);
+        //console.log(`request for loan metrics`);
 
         const { Pool } = require('pg');
         const pool = new Pool();
@@ -123,9 +123,51 @@ getLoanMetrics = async (req, resp) => {
     }
 };
 
+getLoanData = async (req, resp) => {
+    try {
+        //console.log(`request for last 5 u-loan applications`);
+
+        const { Pool } = require('pg');
+        const pool = new Pool();
+
+        //where lower(substring('loan_data' from 1 for 1))='{"loanid":"u'
+        const query = `select application_id, loan_data, application_status, modified
+                        from applications
+                        where lower(substring(application_id from 1 for 1))='u'
+                        order by modified desc
+                        limit 5`
+
+        const res = await pool.query(query);
+        if (res == null) {
+            resp.status(404).send("metrics returned empty from data store");
+        }
+        else {
+            const data = [];
+            res.rows.forEach(row => {
+                var reasons = "";
+                var details = JSON.parse(row.loan_data);
+                if (details.applicationResult.verificationProcess && !details.applicationResult.verificationProcess.result)
+                    reasons += `verification - ${details.applicationResult.verificationProcess.reason}\n`;
+                if (details.applicationResult.approvalProcess && !details.applicationResult.approvalProcess.result)
+                    reasons += `approval - ${details.applicationResult.approvalProcess.reason}`;
+                data.push({id:row.application_id,loandata : row.loan_data,status : row.application_status, modified : row.modified, reasons:reasons });
+            });
+            resp.json(data);
+        }
+
+        await pool.end();
+
+    } catch (error) {
+        console.log(error);
+        resp.status(500).send("failed to retrieve last 5 u-loan applications");
+    }
+};
+
+
 
 module.exports = {
     getLoanApplication,
     saveLoanApplication,
-    getLoanMetrics
+    getLoanMetrics,
+    getLoanData
 }

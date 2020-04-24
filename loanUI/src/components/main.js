@@ -1,35 +1,19 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Stats from './stats';
+import LoanData from './loandata'
+import Submitter from './submitter'
+import Grid from '@material-ui/core/Grid';
 
 const useStyles = makeStyles(theme => ({
     root: {
         flexGrow: 1,
-        color: 'white'
+        color: 'white',
+        fontSize: '16px',
+        marginTop: '10px',
+        marginLeft: '100px',
+        marginRight: '100px'
     },
-    game: {
-        border: '1px solid white',
-        borderColor: 'gray',
-        background: '#001a33'
-    },
-    highlightgame: {
-        border: '1px solid white',
-        borderColor: 'gray',
-        background: 'black'
-    },
-    finishedgame: {
-        border: '1px solid white',
-        borderColor: 'gray',
-        background: '#282c34'
-    },
-    highlight: {
-        display: 'flex',
-        position: 'absolute',
-        zIndex: '100',
-        background: 'black',
-        alignItems: 'center',
-        justifyContent: 'center',
-    }
 }));
 
 export default function Main() {
@@ -37,7 +21,11 @@ export default function Main() {
 
     return (
         <div className={classes.root} >
-            <Stats />
+            <Grid container>
+                <Grid item xs={3}><Stats /></Grid>
+                <Grid item xs={9}><Submitter /></Grid>
+            </Grid>
+            <LoanData />
         </div >
     )
 }
