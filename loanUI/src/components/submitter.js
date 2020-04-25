@@ -60,6 +60,7 @@ export default function Submitter() {
         const result = await SubmitLoanService(app);
         //todo:flash result in snackbar tray
         clear();
+        return result;
     }
     const handleChange = (prop) => (event) => {
         setapp({ ...app, [prop]: event.target.value });
@@ -75,7 +76,6 @@ export default function Submitter() {
                     <OutlinedInput
                         id="outlined-adornment-id"
                         value={app.loanId}
-                        startAdornment={<InputAdornment position="start"></InputAdornment>}
                         labelWidth={150}
                         disabled
                     />
@@ -86,8 +86,6 @@ export default function Submitter() {
                         id="outlined-adornment-credit"
                         value={app.creditScore}
                         onChange={handleChange('creditScore')}
-                        startAdornment={<InputAdornment position="start"></InputAdornment>}
-                        defaultValue={""}
                         labelWidth={100}
                     />
                 </FormControl>

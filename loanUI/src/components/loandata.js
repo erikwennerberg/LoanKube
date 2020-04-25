@@ -60,15 +60,17 @@ export default function LoanData() {
     };
 
     const last5apps = () => {
-        console.log(data);
+
+        //console.log(data);
 
         return data.map((d, key, options) =>
             <Grid container key={d.id}>
                 <Grid item xs={3}>{d.modified}</Grid>
                 <Grid item xs={1}>{d.id}</Grid>
                 <Grid item xs={2}>{approveOrReject(d.status)}</Grid>
-                <Grid item className={classes.reasons} xs={6}>{d.reasons}</Grid>
-            </Grid>
+                <Grid item className={classes.reasons} xs={5}>{d.reasons}</Grid>
+                <Grid item xs={1}>{d.duration} ms</Grid>
+          </Grid>
         );
         //return "test";
     };

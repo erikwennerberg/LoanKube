@@ -13,25 +13,25 @@ const useStyles = makeStyles(theme => ({
         padding: '10px'
     },
     number: {
-       
+
     },
     label: {
         textAlign: 'center'
     },
     total: {
-        fontSize:'36px'
+        fontSize: '36px'
     },
     approved: {
         color: 'green',
-        fontSize:'36px'
+        fontSize: '36px'
     },
     rejected: {
         color: 'red',
-        fontSize:'36px'
+        fontSize: '36px'
     },
     invalid: {
         color: 'gray',
-        fontSize:'36px'
+        fontSize: '36px'
     },
     statistics: {
     }
@@ -67,6 +67,7 @@ export default function Stats() {
             <div className={classes.metric}>
                 <div className={classes.label}>Total Applications Received:</div>
                 <div className={classes.total}>{stats.total}</div>
+                <div className={classes.label}>Rolling Average: {stats.totalDuration.toFixed(2)} ms</div>
             </div>
             <div className={classes.metric}>
                 <div className={classes.label}>Loan Applications Approved:</div>
@@ -74,7 +75,7 @@ export default function Stats() {
             </div>
             <div className={classes.metric}>
                 <div className={classes.label}>Loan Applications Rejected:</div>
-                <div className={classes.rejected}>{`${stats.rejectedTotal}  -  ${(stats.rejectedTotal * 100.00 / (stats.total)).toFixed(2)}%`}</div>
+                <div className={classes.rejected}>{`${stats.rejectedTotal}  -  ${(stats.rejectedTotal * 100.00 / (stats.total)).toFixed(2)}%`}</div>  
             </div>
             <div className={classes.metric}>
                 <div className={classes.label}>Invalid Applications:</div>
@@ -82,6 +83,8 @@ export default function Stats() {
             </div>
         </div>;
     }
+// <div className={classes.label}>Rolling Average: {stats.approvedDuration.toFixed(2)} ms</div>
+// <div className={classes.label}>Rolling Average: {stats.rejectedDuration.toFixed(2)} ms</div>
 
     return (
         <div className={classes.root} >

@@ -71,13 +71,13 @@ saveLoanApplication = async (req, resp) => {
             else
                 success = false;
         }
-        const sqlu = `update applications set loan_data='${JSON.stringify(loan)}', application_status=${success}, modified=now() where application_id='${loan.loanId}'`
+        const sqlu = `update applications set loan_data='${JSON.stringify(loan)}', application_status=${success}, modified=now(), start=to_timestamp(${loan.start} / 1000.0) where application_id='${loan.loanId}'`
         console.log(sqlu)
         const res1 = await pool.query(sqlu);
         
         console.log(res1.rowCount);
         if (res1 == null || res1.rowCount == 0) {
-            const sql = `insert into applications (application_id, loan_data, modified) values ('${loan.loanId}','${JSON.stringify(loan)}',now())`;
+            const sql = `insert into applications (application_id, loan_data, modified, start) values ('${loan.loanId}','${JSON.stringify(loan)}',now(), to_timestamp(${loan.start} / 1000.0))`;
             console.log(sql);
             const res2 = await pool.query(sql);
         }
@@ -97,10 +97,15 @@ getLoanMetrics = async (req, resp) => {
         const { Pool } = require('pg');
         const pool = new Pool();
 
-        const query = `SELECT a.approved, r.rejected, t.total, (t.total-(a.approved+r.rejected)) as notprocessed 
+        const query = `SELECT a.approved, r.rejected, t.total, (t.total-(a.approved+r.rejected)) as notprocessed,td.total_duration 
  FROM (SELECT count(*) as approved FROM applications where application_status='true') as a,
  (SELECT count(*) as rejected FROM applications where application_status='false') as r,
- (SELECT count(*) as total FROM applications) as t`
+ (SELECT count(*) as total FROM applications) as t,
+ (SELECT avg(extract(epoch from (x.modified-x.start))*1000) as total_duration FROM (select modified, start from applications order by modified desc limit 10) as x) as td`
+
+// (SELECT avg(extract(epoch from (modified-start))*1000) as approve_duration FROM applications where application_status='true' limit 10) as ad,
+// (SELECT avg(extract(epoch from (modified-start))*1000) as reject_duration FROM applications where application_status='false' limit 10) as rd,
+
 
         const res = await pool.query(query);
         if (res == null) {
@@ -112,6 +117,9 @@ getLoanMetrics = async (req, resp) => {
             metrics.rejectedTotal = res.rows[0].rejected;
             metrics.notprocessed = res.rows[0].notprocessed;
             metrics.total = res.rows[0].total;
+            //metrics.approvedDuration = res.rows[0].approve_duration;
+            //metrics.rejectedDuration = res.rows[0].reject_duration;
+            metrics.totalDuration = res.rows[0].total_duration;
             resp.json(metrics);
         }
 
@@ -131,7 +139,8 @@ getLoanData = async (req, resp) => {
         const pool = new Pool();
 
         //where lower(substring('loan_data' from 1 for 1))='{"loanid":"u'
-        const query = `select application_id, loan_data, application_status, modified
+        const query = `select application_id, loan_data, application_status, 
+                        modified, start, extract(epoch from (modified-start))*1000 as duration
                         from applications
                         where lower(substring(application_id from 1 for 1))='u'
                         order by modified desc
@@ -150,7 +159,11 @@ getLoanData = async (req, resp) => {
                     reasons += `verification - ${details.applicationResult.verificationProcess.reason}\n`;
                 if (details.applicationResult.approvalProcess && !details.applicationResult.approvalProcess.result)
                     reasons += `approval - ${details.applicationResult.approvalProcess.reason}`;
-                data.push({id:row.application_id,loandata : row.loan_data,status : row.application_status, modified : row.modified, reasons:reasons });
+                data.push({id:row.application_id,loandata : row.loan_data,
+                    status : row.application_status, 
+                    modified : row.modified, 
+                    reasons:reasons, start: row.start,
+                    duration: row.duration });
             });
             resp.json(data);
         }
