@@ -13,6 +13,7 @@ processLoanApplication = async (req, resp) => {
 
         //save loan application to data source
         console.log("persist loan process");
+        loan.start = Date.now();
         let response1 = await axios.post(`http://${process.env.LOANDATA_SERVICE_HOST}:${process.env.LOANDATA_SERVICE_PORT}`, JSON.stringify(loan), { headers: { "Content-Type": "application/json" } });
         if (response1.status !== 200)
             return ru.error(resp, response1);

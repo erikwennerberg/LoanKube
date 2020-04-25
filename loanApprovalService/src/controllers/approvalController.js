@@ -23,20 +23,21 @@ approveLoanApplication = async (req, resp) => {
         if (loan.applicationResult == null)
             loan.applicationResult = {};
         loan.applicationResult.approvalProcess = approval;
+       
+       //fake time delay to allow real world differences
+       //await sleep(500);
+       /*var val = 0;
+       for (let i = 0; i < 30000; i++) 
+           for (let x = 0; x < 10000; x++) 
+               val = i-x
+       console.log(val)*/
 
-        //save updated loan application into data store
+       //save updated loan application into data store
         let response2 = await axios.post(`http://${process.env.LOANDATA_SERVICE_HOST}:${process.env.LOANDATA_SERVICE_PORT}`, JSON.stringify(loan), { headers: { "Content-Type": "application/json" } });
         if (response2.status !== 200)
             return ru.error(resp, response2);
 
-        //fake time delay to allow real world differences
-        //await sleep(random.weightedRandom(2000, 2));
-        var val = 0;
-        for (let i = 0; i < 30000; i++) 
-            for (let x = 0; x < 10000; x++) 
-                val = i-x
-        console.log(val)
-
+     
         //send just validation result
         resp.status(200).send(JSON.stringify(approval));
 

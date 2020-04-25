@@ -8,5 +8,8 @@ router.route('/')
 router.route('/metrics')
     .get(api.getLoanMetrics);
 
+router.route('/uloans')
+    .get(api.getLoanData);
+
 
 module.exports = router;

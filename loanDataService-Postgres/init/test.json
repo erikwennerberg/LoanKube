@@ -1,0 +1,11 @@
+{
+    "loanId": "113",
+    "creditScore": "300",
+    "loanAmount": "650000",
+    "applicationResult": {
+        "verificationProcess": {
+            "result": false,
+            "reason": "rule - credit score is out of range (450-850)"
+        }
+    }
+}
