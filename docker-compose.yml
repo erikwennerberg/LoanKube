@@ -1,0 +1,71 @@
+version: '3'
+services:
+
+  postgres:
+    image: "postgres"
+    environment:
+      - POSTGRES_HOST_AUTH_METHOD=trust
+    ports:
+      - 5432:5432
+    volumes:
+      - ./loanDataService-Postgres/init/:/docker-entrypoint-initdb.d/
+  
+  loandata:
+    build:
+      context: ./loanDataService-Postgres
+    environment:
+      - PGHOST=postgres
+      - PGUSER=postgres
+    ports:
+      - "3000:80"
+    container_name: loandata
+    depends_on:
+      - postgres
+
+  loanverification:
+    build:
+      context: ./loanVerificationService
+    environment:
+      - LOANDATA_SERVICE=loandata
+    container_name: loanverification
+    depends_on:
+      - loandata
+
+  loanapproval:
+    build:
+      context: ./loanApprovalService
+    environment:
+      - LOANDATA_SERVICE=loandata
+    container_name: loanapproval
+    depends_on:
+      - loandata
+
+  loanprocessor:
+    build:
+      context: ./loanProcessorService
+    container_name: loanprocessor
+    ports:
+      - "3006:80"
+    environment:
+      - LOANDATA_SERVICE=loandata
+      - LOANVERIFICATION_SERVICE=loanverification
+      - LOANAPPROVAL_SERVICE=loanapproval
+    depends_on:
+      - loandata
+      - loanverification
+      - loanapproval
+
+# special case, environment varirables are forced through entrypoint to set proxy on start
+# otherwise, they do not get set
+# startup.sh will ultimately run npm after things are set correctly
+  loanui:
+    build:
+      context: ./loanUI
+    container_name: loanui
+    ports:
+      - "8003:3000"
+    depends_on:
+      - loanprocessor
+    entrypoint: ["./startup.sh", "loandata", "loanprocessor"]
+    
+

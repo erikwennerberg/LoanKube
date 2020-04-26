@@ -54,12 +54,12 @@ export default function Submitter() {
     }
 
     const clear = () => {
-        setNextUser();
+        setapp({ ...app, creditScore:'',loanAmount:'' });
     }
     const submit = async () => {
         const result = await SubmitLoanService(app);
         //todo:flash result in snackbar tray
-        clear();
+        setNextUser();
         return result;
     }
     const handleChange = (prop) => (event) => {

@@ -97,7 +97,7 @@ getLoanMetrics = async (req, resp) => {
         const { Pool } = require('pg');
         const pool = new Pool();
 
-        const query = `SELECT a.approved, r.rejected, t.total, (t.total-(a.approved+r.rejected)) as notprocessed,td.total_duration 
+        const query = `SELECT a.approved, r.rejected, t.total, (t.total-(a.approved+r.rejected)) as notprocessed,coalesce(td.total_duration, 0) as totalduration
  FROM (SELECT count(*) as approved FROM applications where application_status='true') as a,
  (SELECT count(*) as rejected FROM applications where application_status='false') as r,
  (SELECT count(*) as total FROM applications) as t,
@@ -119,7 +119,7 @@ getLoanMetrics = async (req, resp) => {
             metrics.total = res.rows[0].total;
             //metrics.approvedDuration = res.rows[0].approve_duration;
             //metrics.rejectedDuration = res.rows[0].reject_duration;
-            metrics.totalDuration = res.rows[0].total_duration;
+            metrics.totalDuration = res.rows[0].totalduration;
             resp.json(metrics);
         }
 

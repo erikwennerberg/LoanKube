@@ -14,14 +14,14 @@ processLoanApplication = async (req, resp) => {
         //save loan application to data source
         console.log("persist loan process");
         loan.start = Date.now();
-        let response1 = await axios.post(`http://${process.env.LOANDATA_SERVICE_HOST}:${process.env.LOANDATA_SERVICE_PORT}`, JSON.stringify(loan), { headers: { "Content-Type": "application/json" } });
+        let response1 = await axios.post(`http://${process.env.LOANDATA_SERVICE}`, JSON.stringify(loan), { headers: { "Content-Type": "application/json" } });
         if (response1.status !== 200)
             return ru.error(resp, response1);
         console.log(`loan application persisted - ${loan.loanId}`);
 
         //verify loan application
         console.log("verify loan process");
-        let response2 = await axios.post(`http://${process.env.LOANVERIFICATION_SERVICE_HOST}:${process.env.LOANVERIFICATION_SERVICE_PORT}/?loanId=${loan.loanId}`)
+        let response2 = await axios.post(`http://${process.env.LOANVERIFICATION_SERVICE}/?loanId=${loan.loanId}`)
         if (response2.status !== 200)
             return ru.error(resp, response2);
         if (!response2.data.result)
@@ -30,7 +30,7 @@ processLoanApplication = async (req, resp) => {
 
         //approve loan if verification passed
         console.log("approve loan process");
-        let response3 = await axios.post(`http://${process.env.LOANAPPROVAL_SERVICE_HOST}:${process.env.LOANAPPROVAL_SERVICE_PORT}/?loanId=${loan.loanId}`)
+        let response3 = await axios.post(`http://${process.env.LOANAPPROVAL_SERVICE}/?loanId=${loan.loanId}`)
         if (response3.status !== 200)
             return ru.error(resp, response3);
 
