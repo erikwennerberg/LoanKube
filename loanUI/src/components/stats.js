@@ -45,7 +45,8 @@ export default function Stats() {
 
         async function fetchStatistics() {
             const results = await MetricsService();
-            setstats(results.data);
+            if (results.data && results.data.total>0)
+                setstats(results.data);
         }
         const statsloop = setInterval(() => {
             fetchStatistics();
@@ -83,12 +84,18 @@ export default function Stats() {
             </div>
         </div>;
     }
+
+    const nodata = () => {
+        return <div>Metrics are not available at this time</div>
+    }
+
 // <div className={classes.label}>Rolling Average: {stats.approvedDuration.toFixed(2)} ms</div>
 // <div className={classes.label}>Rolling Average: {stats.rejectedDuration.toFixed(2)} ms</div>
 
     return (
         <div className={classes.root} >
             {stats && statsbuilder()}
+            {!stats && nodata()}
         </div >
     )
 }

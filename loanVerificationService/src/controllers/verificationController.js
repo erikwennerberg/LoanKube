@@ -32,7 +32,7 @@ verifyLoanApplication = async (req, resp) => {
         var loanId = req.query.loanId;
 
         //get loan application from data store
-        let response1 = await axios.get(`http://${process.env.LOANDATA_SERVICE_HOST}:${process.env.LOANDATA_SERVICE_PORT}/?loanId=${loanId}`)
+        let response1 = await axios.get(`http://${process.env.LOANDATA_SERVICE}/?loanId=${loanId}`)
         if (response1.status !== 200)
             return ru.error(resp, response1);
 
@@ -54,7 +54,7 @@ verifyLoanApplication = async (req, resp) => {
         console.log(val)*/
 
         //save updated loan application into data store
-        let response2 = await axios.post(`http://${process.env.LOANDATA_SERVICE_HOST}:${process.env.LOANDATA_SERVICE_PORT}`, JSON.stringify(loan), { headers: { "Content-Type": "application/json" } });
+        let response2 = await axios.post(`http://${process.env.LOANDATA_SERVICE}`, JSON.stringify(loan), { headers: { "Content-Type": "application/json" } });
         if (response2.status !== 200)
             return ru.error(resp, response2);
 

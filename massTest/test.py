@@ -6,6 +6,7 @@ import random
 import datetime
 import logging
 import zlib
+import sys
 
 from datetime import timedelta
 
@@ -37,7 +38,11 @@ def HTTPExec(url, data):
 
 def MassTest():
     id = random.randint(1,999)
-    for i in range(2000,2200):
+    size = 200
+    if len(sys.argv) > 0:
+        logging.info(sys.argv[1])
+        size = int(sys.argv[1])
+    for i in range(2000,2000 + size):
         start_time = datetime.datetime.now()
         data = {"loanId": f'{id}-{i}','creditScore': random.randint(440,840),'loanAmount': random.randint(850,9999999)}
         res = HTTPExec(f'http://localhost:3006/', data)
