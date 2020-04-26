@@ -45,7 +45,7 @@ For testing purposes, by default, port *3006* is exposed outside of the applicat
 ### LoanUI
 LoanUI is a ReactJs + NodeJs web application, built from the very popular [create-react-app](https://github.com/facebook/create-react-app), originally from the development teams at Facebook.
 
-The LoanUI web application allows users to submit a loan application, review their results (any application where the Loan Application ID is prefixed iwth a *'u'*), and see overall statistics on application approval and rejection rates.
+The LoanUI web application allows users to submit a loan application, review their results (any application where the Loan Application ID is prefixed with a *'u'*), and see overall statistics on application approval and rejection rates.
 
 ![Demo](demo.png)
 
