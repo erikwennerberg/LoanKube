@@ -2,7 +2,7 @@ const axios = require('axios')
 const ru = require('../utility/request');
 const { sleep } = require('../utility/sleep');
 const random = require('../utility/random');
-
+const opentelemetry = require('@opentelemetry/api');
 
 approveLoanApplication = async (req, resp) => {
     try {

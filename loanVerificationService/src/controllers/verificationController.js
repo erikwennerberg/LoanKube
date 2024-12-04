@@ -2,7 +2,7 @@ const axios = require('axios')
 const ru = require('../utility/request');
 const { sleep } = require('../utility/sleep');
 const random = require('../utility/random');
-
+const opentelemetry = require('@opentelemetry/api');
 
 validateLoan = (loan) => {
     if (loan == null)
@@ -38,7 +38,7 @@ verifyLoanApplication = async (req, resp) => {
 
         //update span with loan data
         const activeSpan = opentelemetry.trace.getActiveSpan();
-        activeSpan.setAttribute('loanid', loan.loanId);
+        activeSpan.setAttribute('loanid', loanId);
         activeSpan.setAttribute('loanworkflowstate', "application verification");
 
         //verify loan

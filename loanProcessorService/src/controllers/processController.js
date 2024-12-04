@@ -1,6 +1,6 @@
 const axios = require('axios')
 const ru = require('../utility/request');
-
+const opentelemetry = require('@opentelemetry/api');
 
 processLoanApplication = async (req, resp) => {
     try {

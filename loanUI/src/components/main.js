@@ -22,10 +22,10 @@ export default function Main() {
     return (
         <div className={classes.root} >
             <Grid container>
-                <Grid item xs={3}><Stats /></Grid>
+                {/* <Grid item xs={3}><Stats /></Grid> */}
                 <Grid item xs={9}><Submitter /></Grid>
             </Grid>
-            <LoanData />
+            {/* <LoanData /> */}
         </div >
     )
 }
