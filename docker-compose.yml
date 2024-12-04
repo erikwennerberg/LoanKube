@@ -26,6 +26,7 @@ services:
     environment:
       - PGHOST=postgres
       - PGUSER=postgres
+      - OTEL_EXPORTER_OTLP_ENDPOINT="http://172.17.0.1:4318"
     ports:
       - "3000:80"
     container_name: loandata
@@ -37,6 +38,7 @@ services:
       context: ./loanVerificationService
     environment:
       - LOANDATA_SERVICE=loandata
+      - OTEL_EXPORTER_OTLP_ENDPOINT="http://172.17.0.1:4318"
     container_name: loanverification
     depends_on:
       - loandata
@@ -46,6 +48,7 @@ services:
       context: ./loanApprovalService
     environment:
       - LOANDATA_SERVICE=loandata
+      - OTEL_EXPORTER_OTLP_ENDPOINT="http://172.17.0.1:4318"
     container_name: loanapproval
     depends_on:
       - loandata
@@ -60,6 +63,7 @@ services:
       - LOANDATA_SERVICE=loandata
       - LOANVERIFICATION_SERVICE=loanverification
       - LOANAPPROVAL_SERVICE=loanapproval
+      - OTEL_EXPORTER_OTLP_ENDPOINT="http://172.17.0.1:4318"
     depends_on:
       - loandata
       - loanverification
