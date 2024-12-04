@@ -69,7 +69,7 @@ export default function LoanData() {
                 <Grid item xs={1}>{d.id}</Grid>
                 <Grid item xs={2}>{approveOrReject(d.status)}</Grid>
                 <Grid item className={classes.reasons} xs={5}>{d.reasons}</Grid>
-                <Grid item xs={1}>{d.duration.toFixed(2)} ms</Grid>
+                {/* // <Grid item xs={1}>{d.duration.toFixed(2)} ms</Grid> */}
           </Grid>
         );
         //return "test";

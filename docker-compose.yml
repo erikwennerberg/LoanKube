@@ -4,9 +4,19 @@ services:
   postgres:
     image: "postgres"
     environment:
-      - POSTGRES_HOST_AUTH_METHOD=trust
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      #- POSTGRES_HOST_AUTH_METHOD=trust
+      #- POSTGRES_PASSWORD=postgres_password
+    healthcheck:
+      #CHANGE 1: this command checks if the database is ready, right on the source db server
+      test: [ "CMD-SHELL", "pg_isready" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
     ports:
       - 5432:5432
+    container_name: postgres
     volumes:
       - ./loanDataService-Postgres/init/:/docker-entrypoint-initdb.d/
   

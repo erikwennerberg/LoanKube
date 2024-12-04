@@ -35,7 +35,14 @@ getLoanApplication = async (req, resp) => {
         console.log(`request for loan - ${loanId}`);
 
         const { Pool } = require('pg');
-        const pool = new Pool();
+        const pool = new Pool({
+            host: 'postgres',
+            user: 'postgres',
+            password: 'postgres',
+            database: 'postgres',
+            port: 5432,
+            connectionTimeoutMillis: 5000
+        });
 
         const res = await pool.query(`select * from applications where application_id='${loanId}'`);
         await pool.end();
@@ -62,7 +69,14 @@ saveLoanApplication = async (req, resp) => {
         console.log(`request to save loan - ${loan.loanId}`);
 
         const { Pool } = require('pg');
-        const pool = new Pool();
+        const pool = new Pool({
+            host: 'postgres',
+            user: 'postgres',
+            password: 'postgres',
+            database: 'postgres',
+            port: 5432,
+            connectionTimeoutMillis: 5000
+        });
 
         let success = null;
         if (loan.applicationResult != null && loan.applicationResult.approvalProcess != null) {
@@ -136,7 +150,14 @@ getLoanData = async (req, resp) => {
         //console.log(`request for last 5 u-loan applications`);
 
         const { Pool } = require('pg');
-        const pool = new Pool();
+        const pool = new Pool({
+            host: 'postgres',
+            user: 'postgres',
+            password: 'postgres',
+            database: 'postgres',
+            port: 5432,
+            connectionTimeoutMillis: 5000
+        });
 
         //where lower(substring('loan_data' from 1 for 1))='{"loanid":"u'
         const query = `select application_id, loan_data, application_status, 

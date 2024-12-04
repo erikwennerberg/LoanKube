@@ -11,6 +11,13 @@ processLoanApplication = async (req, resp) => {
             return ru.error(resp, null, "loan does not contain valid loanId");
         console.log(`loan being processed - ${loan.loanId}`);
 
+
+        const activeSpan = opentelemetry.trace.getActiveSpan();
+
+        activeSpan.setAttribute('loanid', loan.loanId);
+        activeSpan.setAttribute('loanworkflowstate', "application created");
+        activeSpan.setAttribute('loanstatus', "created");
+
         //save loan application to data source
         console.log("persist loan process");
         loan.start = Date.now();

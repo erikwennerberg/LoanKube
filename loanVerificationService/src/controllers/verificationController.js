@@ -36,6 +36,11 @@ verifyLoanApplication = async (req, resp) => {
         if (response1.status !== 200)
             return ru.error(resp, response1);
 
+        //update span with loan data
+        const activeSpan = opentelemetry.trace.getActiveSpan();
+        activeSpan.setAttribute('loanid', loan.loanId);
+        activeSpan.setAttribute('loanworkflowstate', "application verification");
+
         //verify loan
         var loan = response1.data;
         var validation = validateLoan(loan);
@@ -45,8 +50,12 @@ verifyLoanApplication = async (req, resp) => {
             loan.applicationResult = {};
         loan.applicationResult.verificationProcess = validation;
 
+
+        activeSpan.setAttribute('loanstatus', validation.result ? "loan verified passed" : "loan verified not passed");
+
+
         //fake time delay to allow real world differences
-        //await sleep(500);
+        await sleep(500);
         /*var val = 0;
         for (let i = 0; i < 30000; i++) 
             for (let x = 0; x < 10000; x++) 

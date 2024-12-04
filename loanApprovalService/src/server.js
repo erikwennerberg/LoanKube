@@ -1,5 +1,6 @@
 // ./src/server.js
 require('dotenv').config();  
+require('./instrumentation.js');
 
 const express = require("express");
 const bodyParser = require("body-parser");
