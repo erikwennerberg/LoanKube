@@ -26,7 +26,9 @@ services:
     environment:
       - PGHOST=postgres
       - PGUSER=postgres
-      - OTEL_EXPORTER_OTLP_ENDPOINT="http://172.17.0.1:4318"
+      - OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=http://alloy:4318/v1/traces
+      - OTEL_EXPORTER_OTLP_METRICS_ENDPOINT=http://alloy:4318/v1/metrics
+      - OTEL_LOG_LEVEL=INFO
     ports:
       - "3000:80"
     container_name: loandata
@@ -38,7 +40,9 @@ services:
       context: ./loanVerificationService
     environment:
       - LOANDATA_SERVICE=loandata
-      - OTEL_EXPORTER_OTLP_ENDPOINT="http://172.17.0.1:4318"
+      - OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=http://alloy:4318/v1/traces
+      - OTEL_EXPORTER_OTLP_METRICS_ENDPOINT=http://alloy:4318/v1/metrics
+      - OTEL_LOG_LEVEL=INFO
     container_name: loanverification
     depends_on:
       - loandata
@@ -48,7 +52,9 @@ services:
       context: ./loanApprovalService
     environment:
       - LOANDATA_SERVICE=loandata
-      - OTEL_EXPORTER_OTLP_ENDPOINT="http://172.17.0.1:4318"
+      - OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=http://alloy:4318/v1/traces
+      - OTEL_EXPORTER_OTLP_METRICS_ENDPOINT=http://alloy:4318/v1/metrics
+      - OTEL_LOG_LEVEL=INFO
     container_name: loanapproval
     depends_on:
       - loandata
@@ -63,7 +69,9 @@ services:
       - LOANDATA_SERVICE=loandata
       - LOANVERIFICATION_SERVICE=loanverification
       - LOANAPPROVAL_SERVICE=loanapproval
-      - OTEL_EXPORTER_OTLP_ENDPOINT="http://172.17.0.1:4318"
+      - OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=http://alloy:4318/v1/traces
+      - OTEL_EXPORTER_OTLP_METRICS_ENDPOINT=http://alloy:4318/v1/metrics
+      - OTEL_LOG_LEVEL=INFO
     depends_on:
       - loandata
       - loanverification
@@ -81,5 +89,20 @@ services:
     depends_on:
       - loanprocessor
     entrypoint: ["./startup.sh", "loandata", "loanprocessor"]
+
+  alloy:
+    image: grafana/alloy:latest
+    container_name: alloy
+    ports:
+      - "12345:12345"
+      - "4318:4318"
+    volumes:
+      - "./config.alloy:/etc/alloy/config.alloy"
+    command: [
+      "run",
+      "--server.http.listen-addr=0.0.0.0:12345",
+      "--stability.level=public-preview",
+      "/etc/alloy/config.alloy",
+    ]
     
 

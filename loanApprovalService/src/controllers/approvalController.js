@@ -33,7 +33,7 @@ approveLoanApplication = async (req, resp) => {
         activeSpan.setAttribute('loanstatus', approval.result ? "loan was approved" : "loan was not approved");
 
        //fake time delay to allow real world differences
-       await sleep(500);
+       await sleep(1500);
        /*var val = 0;
        for (let i = 0; i < 30000; i++) 
            for (let x = 0; x < 10000; x++) 
