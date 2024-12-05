@@ -7,6 +7,7 @@ processLoanApplication = async (req, resp) => {
 
         //loan application from body
         var loan = req.body;
+        console.log('loan req body: '+JSON.stringify(loan));
         if (loan == null || loan.loanId == null || loan.loanId === "")
             return ru.error(resp, null, "loan does not contain valid loanId");
         console.log(`loan being processed - ${loan.loanId}`);
