@@ -40,10 +40,18 @@ verifyLoanApplication = async (req, resp) => {
         const activeSpan = opentelemetry.trace.getActiveSpan();
         activeSpan.setAttribute('loanid', loanId);
         activeSpan.setAttribute('loanworkflowstate', "application verification");
+        activeSpan.setAttribute('workflow', "loan application");
+        activeSpan.setAttribute('nextstate', "application approval");
+
+
+
 
         //verify loan
         var loan = response1.data;
         var validation = validateLoan(loan);
+
+        activeSpan.setAttribute('loanamount', loan.loanAmount);
+        activeSpan.setAttribute('loancreditscore', loan.creditScore);
 
         //include results in loan application
         if (loan.applicationResult == null)

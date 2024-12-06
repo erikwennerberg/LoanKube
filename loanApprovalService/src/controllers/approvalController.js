@@ -20,10 +20,16 @@ approveLoanApplication = async (req, resp) => {
 
         activeSpan.setAttribute('loanid', loandId);
         activeSpan.setAttribute('loanworkflowstate', "application approval");
+        activeSpan.setAttribute('workflow', "loan application");
+        activeSpan.setAttribute('nextstate', "end");
+
 
         //approve loan
         var loan = response1.data;
         var approval = approveLoan(loan);
+
+        activeSpan.setAttribute('loanamount', loan.loanAmount);
+        activeSpan.setAttribute('loancreditscore', loan.creditScore);
 
         //include results in loan application
         if (loan.applicationResult == null)

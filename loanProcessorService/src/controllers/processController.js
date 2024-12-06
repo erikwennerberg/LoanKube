@@ -17,6 +17,11 @@ processLoanApplication = async (req, resp) => {
         activeSpan.setAttribute('loanid', loan.loanId);
         activeSpan.setAttribute('loanworkflowstate', "application created");
         activeSpan.setAttribute('loanstatus', "created");
+        activeSpan.setAttribute('workflow', "loan application");
+        activeSpan.setAttribute('nextstate', "application verification");
+        activeSpan.setAttribute('loanamount', loan.loanAmount);
+        activeSpan.setAttribute('loancreditscore', loan.creditScore);
+
 
         //save loan application to data source
         console.log("persist loan process");
