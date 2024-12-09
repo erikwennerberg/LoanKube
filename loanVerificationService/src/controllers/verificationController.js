@@ -39,9 +39,9 @@ verifyLoanApplication = async (req, resp) => {
         //update span with loan data
         const activeSpan = opentelemetry.trace.getActiveSpan();
         activeSpan.setAttribute('loanid', loanId);
-        activeSpan.setAttribute('loanworkflowstate', "application verification");
-        activeSpan.setAttribute('workflow', "loan application");
-        activeSpan.setAttribute('nextstate', "application approval");
+        activeSpan.setAttribute('loanworkflowstate', "application-verification");
+        activeSpan.setAttribute('workflow', "loan-application");
+        activeSpan.setAttribute('nextstate', "application-approval");
 
 
 

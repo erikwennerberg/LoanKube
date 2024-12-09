@@ -15,10 +15,10 @@ processLoanApplication = async (req, resp) => {
         const activeSpan = opentelemetry.trace.getActiveSpan();
 
         activeSpan.setAttribute('loanid', loan.loanId);
-        activeSpan.setAttribute('loanworkflowstate', "application created");
+        activeSpan.setAttribute('loanworkflowstate', "application-created");
         activeSpan.setAttribute('loanstatus', "created");
-        activeSpan.setAttribute('workflow', "loan application");
-        activeSpan.setAttribute('nextstate', "application verification");
+        activeSpan.setAttribute('workflow', "loan-application");
+        activeSpan.setAttribute('nextstate', "application-verification");
         activeSpan.setAttribute('loanamount', loan.loanAmount);
         activeSpan.setAttribute('loancreditscore', loan.creditScore);
 
