@@ -1,5 +1,7 @@
 # Loan Kube
-Test application for use on Openshift or with docker-compose.  See the individual Deployment sections for more details.
+Forked the Loan Kube Test application for use with docker-compose. 
+The app has been instrumented with OTEL to show dsitributed tracing and business observability use cases.
+See the individual Deployment sections for more details.
 This application simulates a rudimentary workflow a bank loan application, through user submission, verification of the loan application, and approval process.  Data is persisted in a ephemeral Postgres database.
 
 Instead of a single monolithic application, this demo showcases a basic microservice approach - intent on how multiple services could be developed, executed, and integrated independent from each other.
@@ -42,22 +44,12 @@ The LoanProcessor also initiates the starting time for a loan application to eva
 
 For testing purposes, by default, port *3006* is exposed outside of the application (internal port 80 for the container).  However, the port does not NEED to be exposed as the only interaction should be from the LoanUI web application.  That communication is proxied within the container sub-network.
 
-### LoanUI
-LoanUI is a ReactJs + NodeJs web application, built from the very popular [create-react-app](https://github.com/facebook/create-react-app), originally from the development teams at Facebook.
+### Observability / OTEL
+This application is pre-instrumented with OTEL for Node.js. Each micro-service has an instrumentation.js file containing all the needed instrumentation. There are also cusotm span attributes with business metrics being added throughout. 
+To collect the OTEL telemtry, this app has been setup with Grafana Alloy which will be spun up automatically as an OTEL collector with docker compose. config.alloy has the collector specific configuration and will need to be setup with a remote write endpoint for the telemetry. 
 
-The LoanUI web application allows users to submit a loan application, review their results (any application where the Loan Application ID is prefixed with a *'u'*), and see overall statistics on application approval and rejection rates.
-
-![Demo](demo.png)
-
-By default, the LoanUI web application is exposed on port *8003*, but can be configured to another port or, if using an ingress or load balancing utility, a named service (like http://loankube.example.com).
-
-### (EXTRA) MassTest
-MassTest is a Python 3 console application that provides bulk application submittals.  The MassTest application is *NOT* containerized and may need to be configured to point to the appropriate LoanProcessor exposed API.
-
-Execute MassTest like this (the last argument (101) can be any number and represents the number of application to submit):
-```
-python3 test.py 101
-```
+### Load Testing
+I created k6-create-loans.js for simulating load. It can be run with k6 OSS or k6 cloud. 
 
 
 ## Deployment
@@ -84,71 +76,4 @@ To cleanup the project, from the same folder execute:
 docker-compose down
 ```
 
-
-
-# OpenShift
-*Please note that I am using generic passwords in the documenation.  Obviously, change at will.*  
-**todo: needs additional documentation attention**
-**todo: double check ports can be 80 in OpenShift....might need to be above 1023**
-
-# Deploy Application
-Create your project and log into the project from the oc command line tool.
-
-### Postgres Database 
-(no backend storage defined...will use temporary storage while it is running and remove it when the pod is stopped)
-```
-oc new-app -e POSTGRES_HOST_AUTH_METHOD=trust --name=postgres postgresql
-```
-
-#### Initialize Database (todo: see if this can be merged into the above command automatically)
-We'll want to make this run as an Init container in the future
-Get running Postgresql pod
-
-```
-oc get pods
-```  
-```
-oc rsh postgresql-1-czdh4  # replace with your pod name
-``` 
-
-Once exe'd into the pod, run psql from the command prompt and init database with the following commands:  
-``` 
-psql -U postgres
-``` 
-```
-CREATE TABLE applications (application_id varchar(50) PRIMARY KEY, loan_data VARCHAR (512) UNIQUE NOT NULL, application_status varchar(10), modified TIMESTAMP NULL,start TIMESTAMP NULL);
-```
-And lastly, exit out psql and the pod.
-
-### LoanKube Application
-#### Data Service
-```
-oc new-app https://github.com/Guarrdon/LoanKube.git --context-dir=loanDataService-Postgres --name=loandata -e PGHOST=postgre -e PGUSER=postgres
-```
-#### Verification Service
-```
-oc new-app https://github.com/Guarrdon/LoanKube.git --context-dir=loanVerificationService --name=loanverification -e LOANDATA_SERVICE=loandata
-```
-#### Data Service
-```
-oc new-app https://github.com/Guarrdon/LoanKube.git --context-dir=loanApprovalService --name=loanapproval -e LOANDATA_SERVICE=loandata
-```
-#### Processor Service
-```
-oc new-app https://github.com/Guarrdon/LoanKube.git --context-dir=loanProcessorService --name=loanprocessor \
--e LOANDATA_SERVICE=loandata \
--e LOANVERIFICATION_SERVICE=loanverification \
--e LOANAPPROVAL_SERVICE=loanapproval
-```
-#### UI Web 
-```
-oc new-app https://github.com/Guarrdon/LoanKube.git --context-dir=loanUI --name=loanui \
--e LOANDATA_SERVICE=loandata \
--e LOANVERIFICATION_SERVICE=loanverification \
--e LOANAPPROVAL_SERVICE=loanapproval
-```
-### Expose Web and Test Integration
-
-* Finally, exose the processor service.
-* If you would like to see the back-end data store, expose the data service as well.
 
